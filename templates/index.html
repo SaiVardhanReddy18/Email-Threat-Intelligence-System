@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard AI</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Segoe UI, sans-serif;
+        }
+
+        body{
+            background:#0f172a;
+            color:white;
+        }
+
+        .navbar{
+            background:#020617;
+            padding:20px;
+            text-align:center;
+            font-size:30px;
+            font-weight:bold;
+            border-bottom:1px solid #334155;
+        }
+
+        .hero{
+            text-align:center;
+            padding:40px 20px;
+        }
+
+        .hero h1{
+            font-size:42px;
+            margin-bottom:15px;
+        }
+
+        .hero p{
+            color:#94a3b8;
+            max-width:800px;
+            margin:auto;
+            line-height:1.7;
+        }
+
+        .container{
+            width:90%;
+            max-width:1200px;
+            margin:auto;
+        }
+
+        .card{
+            background:#1e293b;
+            border-radius:15px;
+            padding:25px;
+            margin-bottom:25px;
+            box-shadow:0px 4px 20px rgba(0,0,0,0.35);
+        }
+
+        input, textarea{
+            width:100%;
+            padding:14px;
+            margin-top:12px;
+            border:none;
+            border-radius:10px;
+            background:#334155;
+            color:white;
+            font-size:15px;
+        }
+
+        textarea{
+            resize:none;
+        }
+
+        button{
+            width:100%;
+            margin-top:15px;
+            padding:14px;
+            border:none;
+            border-radius:10px;
+            background:#2563eb;
+            color:white;
+            font-size:16px;
+            cursor:pointer;
+        }
+
+        button:hover{
+            background:#1d4ed8;
+        }
+
+        .metrics{
+            display:flex;
+            gap:20px;
+            justify-content:center;
+            flex-wrap:wrap;
+            margin-top:20px;
+        }
+
+        .metric-card{
+            background:#334155;
+            width:250px;
+            padding:20px;
+            border-radius:12px;
+            text-align:center;
+        }
+
+        .metric-card h3{
+            color:#94a3b8;
+            margin-bottom:10px;
+        }
+
+        .metric-card h1{
+            font-size:36px;
+        }
+
+        .high{
+            background:#dc2626;
+            color:white;
+            padding:10px 18px;
+            border-radius:20px;
+        }
+
+        .medium{
+            background:#f59e0b;
+            color:white;
+            padding:10px 18px;
+            border-radius:20px;
+        }
+
+        .low{
+            background:#16a34a;
+            color:white;
+            padding:10px 18px;
+            border-radius:20px;
+        }
+
+        .warnings{
+            margin-top:25px;
+        }
+
+        .warning-item{
+            background:#7f1d1d;
+            border-left:5px solid #ef4444;
+            padding:12px;
+            margin-top:10px;
+            border-radius:8px;
+        }
+
+        .features-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+            gap:20px;
+            margin-top:20px;
+        }
+
+        .feature-box{
+            background:#334155;
+            padding:20px;
+            border-radius:10px;
+            text-align:center;
+            transition:0.3s;
+        }
+
+        .feature-box:hover{
+            transform:translateY(-5px);
+        }
+
+        .chart-container{
+        width:100%;
+        height:400px;
+        margin-top:30px;
+        }
+
+    #threatChart{
+        width:100% !important;
+        height:100% !important;
+       }
+
+
+    .threat-meter{
+    margin-top:25px;
+    }
+
+    .progress-bar{
+        width:100%;
+        height:30px;
+        background:#334155;
+        border-radius:20px;
+        overflow:hidden;
+    }
+
+    .progress-fill{
+        height:100%;
+        background:linear-gradient(
+            90deg,
+            #22c55e,
+            #f59e0b,
+            #ef4444
+        );
+        color:white;
+        font-weight:bold;
+        text-align:center;
+        line-height:30px;
+    }
+
+    
+        .footer{
+            background:#020617;
+            text-align:center;
+            padding:20px;
+            margin-top:30px;
+            color:#94a3b8;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+    🛡️ PhishGuard AI
+</div>
+
+<div class="hero">
+    <h1>AI Powered Phishing Detection</h1>
+
+    <p>
+        Detect phishing emails using Machine Learning,
+        URL Analysis, Sender Spoof Detection,
+        Domain Similarity Matching and Threat Intelligence.
+    </p>
+</div>
+
+<div class="container">
+
+{% if message %}
+    <div class="warning-item">
+        {{ message }}
+    </div>
+    {% endif %}
+
+
+
+    <div class="card">
+
+        <h2>Email Analysis</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <input
+                type="text"
+                name="sender"
+                placeholder="Enter Sender Email">
+
+            <textarea
+                name="email"
+                rows="10"
+                placeholder="Paste Email Content Here"></textarea>
+
+                <br><br>
+
+<label>Upload Email File (.txt)</label>
+
+<input
+    type="file"
+    name="email_file"
+    accept=".txt">
+
+            <button type="submit">
+                Analyze Email
+            </button>
+
+        </form>
+
+    </div>
+
+    {% if result %}
+
+    <div class="card">
+
+        <h2>{{ result }}</h2>
+
+        <div class="metrics">
+
+            <div class="metric-card">
+                <h3>Confidence</h3>
+                <h1>{{ confidence }}%</h1>
+            </div>
+
+            <div class="metric-card">
+                <h3>Threat Score</h3>
+                <h1>{{ security_score }}%</h1>
+            </div>
+
+            <div class="metric-card">
+                <h3>Risk Level</h3>
+
+                {% if risk == "HIGH" %}
+                    <span class="high">HIGH</span>
+                {% elif risk == "MEDIUM" %}
+                    <span class="medium">MEDIUM</span>
+                {% else %}
+                    <span class="low">LOW</span>
+                {% endif %}
+
+            </div>
+            <div class="metric-card">
+    <h3>Suspicious URLs</h3>
+    <h1>{{ suspicious_url_count }}</h1>
+</div>
+
+<div class="metric-card">
+    <h3>VirusTotal Hits</h3>
+    <h1>{{ vt_score }}</h1>
+</div>
+
+
+<div class="metric-card">
+    <h3>Total URLs</h3>
+    <h1>{{ total_urls }}</h1>
+</div>
+
+<div class="metric-card">
+    <h3>Safe URLs</h3>
+    <h1>{{ safe_urls }}</h1>
+</div>
+        </div>
+        <div class="threat-meter">
+
+    <h3>Threat Meter</h3>
+
+    <div class="progress-bar">
+
+        <div class="progress-fill"
+             style="width: {{ security_score }}%;">
+
+            {{ security_score }}%
+
+        </div>
+
+    </div>
+
+</div>
+
+        <div class="warnings">
+
+            <h3>Threat Analysis</h3>
+
+            {% for reason in reasons %}
+                <div class="warning-item">
+                    ⚠ {{ reason }}
+                </div>
+            {% endfor %}
+
+            {% if urls %}
+
+<h3 style="margin-top:25px;">
+    Extracted URLs
+</h3>
+
+<table
+style="
+width:100%;
+margin-top:15px;
+border-collapse:collapse;
+">
+
+<tr style="background:#334155;">
+
+    <th style="padding:12px;">
+    URL
+</th>
+
+<th style="padding:12px;">
+    Status
+</th>
+
+<th style="padding:12px;">
+    VirusTotal
+</th>
+
+</tr>
+
+{% for item in url_results %}
+
+<tr>
+
+<td
+style="
+padding:12px;
+border-bottom:1px solid #334155;
+">
+
+{{ item.url }}
+
+</td>
+
+<td
+style="
+padding:12px;
+border-bottom:1px solid #334155;
+">
+
+{% if item.status == "Suspicious" %}
+
+<span class="high">
+Suspicious
+</span>
+
+{% else %}
+
+<span class="low">
+Safe
+</span>
+
+{% endif %}
+
+</td>
+
+<td
+style="
+padding:12px;
+border-bottom:1px solid #334155;
+">
+
+{% if item.vt_hits > 0 %}
+
+<span class="high">
+{{ item.vt_hits }} Detection
+</span>
+
+{% else %}
+
+<span class="low">
+0 Detection
+</span>
+
+{% endif %}
+
+</td>
+
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endif %}
+
+        </div>
+
+        <div class="chart-container">
+
+            <canvas id="threatChart"></canvas>
+
+        </div>
+        <br>
+
+<a href="/download-report">
+    <button>
+        📄 Download PDF Report
+    </button>
+</a>
+
+    </div>
+
+    {% endif %}
+
+<div class="card">
+
+    <h2>📜 Recent Scan History</h2>
+
+    {% if scan_history %}
+
+        {% for scan in scan_history %}
+
+           <div class="warning-item">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+
+        <div>
+            <strong>
+                {{ scan.result if scan.result else "Email Scan" }}
+            </strong>
+        </div>
+
+        {% if scan.risk == "HIGH" %}
+            <span class="high">HIGH</span>
+
+        {% elif scan.risk == "MEDIUM" %}
+            <span class="medium">MEDIUM</span>
+
+        {% else %}
+            <span class="low">LOW</span>
+        {% endif %}
+
+    </div>
+
+    <div style="margin-top:5px;font-size:12px;color:#cbd5e1;">
+        🕒 {{ scan.time }}
+    </div>
+
+</div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No scans available.</p>
+
+    {% endif %}
+
+</div>
+
+    <div class="card">
+
+        <h2>Security Features</h2>
+
+        <div class="features-grid">
+
+            <div class="feature-box">
+    🤖 <br>
+    <strong>AI Email Classification</strong><br>
+    ML-Based Phishing Detection
+</div>
+
+<div class="feature-box">
+    🔗 <br>
+    <strong>URL Threat Analysis</strong><br>
+    Suspicious Link Detection
+</div>
+
+<div class="feature-box">
+    📧 <br>
+    <strong>Sender Verification</strong><br>
+    Email Spoof Detection
+</div>
+
+<div class="feature-box">
+    📎 <br>
+    <strong>Attachment Inspection</strong><br>
+    Malware Extension Scanner
+</div>
+
+<div class="feature-box">
+    🌐 <br>
+    <strong>Domain Intelligence</strong><br>
+    Lookalike Domain Detection
+</div>
+
+<div class="feature-box">
+    🏦 <br>
+    <strong>Brand Protection</strong><br>
+    Brand Impersonation Analysis
+</div>
+<div class="feature-box">
+    📊 <br>
+    <strong>Threat Scoring Engine</strong><br>
+    Risk Level Calculation
+</div>
+
+<div class="feature-box">
+    📈 <br>
+    <strong>Threat Visualization</strong><br>
+    Interactive Security Dashboard
+</div>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="footer">
+    Developed by Sai Vardhan | PhishGuard AI
+</div>
+
+  {% if result and confidence > 0 %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const canvas = document.getElementById("threatChart");
+
+    if (canvas) {
+
+        console.log("Phish:", {{ phish_prob }});
+        console.log("Legit:", {{ legit_prob }});
+
+        new Chart(canvas, {
+            type: "doughnut",
+
+            data: {
+                labels: [
+                    "Phishing Probability",
+                    "Legitimate Probability"
+                ],
+
+                datasets: [{
+                    data: [
+                        {{ phish_prob }},
+                        {{ legit_prob }}
+                    ],
+
+                    backgroundColor: [
+                        "#3b82f6",
+                        "#06b6d4"
+                    ]
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: "white"
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endif %}
+
+</body>
+</html>
