@@ -1,3 +1,11 @@
+![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
+![Flask](https://img.shields.io/badge/Flask-Web%20Framework-black?logo=flask)
+![Machine Learning](https://img.shields.io/badge/Machine-Learning-green)
+![VirusTotal](https://img.shields.io/badge/VirusTotal-API-blue)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+
+
+
 # 🛡️ Email Threat Intelligence System (ETIS)
 
 ### Machine Learning-Based Phishing Email Detection and Threat Analysis Platform
