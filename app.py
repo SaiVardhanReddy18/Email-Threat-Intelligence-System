@@ -17,7 +17,6 @@ app = Flask(__name__)
 VT_API_KEY = os.getenv("VT_API_KEY")
 
 
-
 latest_report = {}
 scan_history = []
 
